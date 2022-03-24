@@ -14,4 +14,16 @@ colnames(disease_data)[1] = "age"
 
 
 mydata = funModeling::heart_disease %>% select(age, max_heart_rate, thal, has_heart_disease)
-head(mydata)
+glimpse(mydata)
+status(mydata)
+
+
+freq(mydata$thal, path_out = ".")
+freq(mydata$has_heart_disease, path_out = ".")
+
+plot_num(mydata)
+View(profiling_num(mydata))
+
+View(Hmisc::describe(mydata))
+
+Hmisc::GiniMd(mydata$age)
