@@ -1,10 +1,7 @@
-install.packages("tidyverse")
-install.packages("funModeling")
-install.packages("Hmisc")
-
 library(tidyverse)
 library(Hmisc)
 library(funModeling)
+
 
 disease_data = read.csv("heart-disease.csv")
 head(data)
@@ -27,3 +24,5 @@ View(profiling_num(mydata))
 View(Hmisc::describe(mydata))
 
 Hmisc::GiniMd(mydata$age)
+
+str(mydata)
