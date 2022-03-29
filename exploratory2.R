@@ -48,4 +48,30 @@ qplot(as.character(cyl), mpg, data = mtcars) + geom_boxplot()
 class(mtcars$cyl)
 
 Hmisc::describe(mtcars$mpg)
- 
+
+## mtcars
+funModeling::data_country
+Hmisc::describe(funModeling::data_country)
+describe(funModeling::data_country)
+data.country = funModeling::data_country
+str(data.country)
+library(dplyr)
+library(tidyr)
+library(funModeling)
+selected.data = data.country %>% subset(country == "France")
+selected.data
+summary(selected.data)
+freq_data = head(freq(data.country, "country"), 10)
+freq_data
+freq(data.country, "has_flu")
+freq(selected.data, "has_flu")
+
+
+country_freq = freq(data.country, "country", plot = F)
+country_freq
+
+head(country_freq, 10)
+data.country$country_2 = ifelse(data.country$country %in% country_freq[1:10,"country"], data.country$country, "other")
+data.country$country_2
+freq(data.country, "country_2", plot=T)
+

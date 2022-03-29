@@ -21,3 +21,4 @@ mean_data %>% ggplot(aes(factor(accession_name), mcbbs)) + geom_boxplot()
 
 as.numeric(sapply(mean_data, mean))
 
+View(ag_data2)
