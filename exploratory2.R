@@ -75,3 +75,35 @@ data.country$country_2 = ifelse(data.country$country %in% country_freq[1:10,"cou
 data.country$country_2
 freq(data.country, "country_2", plot=T)
 
+
+## Livebook
+library(dplyr)
+library(funModeling)
+library(tidyr)
+library(tidyverse)
+
+
+df_status(funModeling::heart_disease)
+Hmisc::describe(heart_disease)
+
+my_data_status = df_status(heart_disease, print_results = F)
+my_data_status
+
+## Remove variables with more than 60% of Zeros
+var_toRemove = my_data_status %>% filter(p_zeros > 60) %>% .$variable
+var_toRemove
+
+## This line of code will select the entire heart disease dataframe except the variables to remove
+heart_disease2 = select(heart_disease, -one_of(var_toRemove))
+df_status(heart_disease2)
+
+## Order your data by p_zeros
+arrange(my_data_status, -p_zeros) %>% select(variable, q_zeros, p_zeros)
+
+# total rows, columns, and column names
+nrow(heart_disease)
+ncol(heart_disease)
+colnames(heart_disease)
+
+freq(data = heart_disease, input = c("thal", "chest_pain"))
+freq(data = heart_disease, "carb")
