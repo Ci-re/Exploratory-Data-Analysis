@@ -27,15 +27,29 @@ new_selectedData$taste = as.numeric(new_selectedData$taste)
 colnames(new_selectedData)[c(51, 52)] = c("frshwt", "dm")
 new_selectedData
 grouped = new_selectedData %>% group_by(accession_name)
-grouped
-new_data = summarise_all(grouped, mean, rm.na = F)
+str(grouped)
+View(df_status(grouped))
+View(grouped)
+names(Filter(is.factor, grouped))
+new_data = summarise_(grouped, mean, rm.na = F)
 View(new_data)
 
+View(df_status(new_data))
+describe(new_data)
 
 summary(new_data)
 hist(new_data$mcbbs)
 boxplot(new_data$mcbbs)
-par(mfrow = c(2,4))
-boxplot(0.1:2.0, new_data$mcmds, main = "boxplot(mcmds)")                    
+par(mfrow = c(2,2))
+boxplot(1.0:3.0, new_data$mcmds, main = "boxplot(mcmds)")                    
 boxplot(new_data$mcbbs, main = "boxplot(mcbbs)")
 boxplot(new_data$cgm1, main = "boxplot(cgm1)")
+
+new_data_std = grouped %>% summarise_all(sd, na.rm = F)
+View(new_data_std)
+boxplot(1.0:3.0, new_data_std$mcmds)
+
+mean(new_data_std$mcmds)
+
+quantile(new_data_std$mcmds)
+freq(new_data$mcmds)
