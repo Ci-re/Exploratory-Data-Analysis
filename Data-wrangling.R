@@ -48,9 +48,12 @@ names(mydata2)
 mydata2$clones
 
 ## Using the pipe %>% and filter function
-mydata2.obama = mydata2 %>% filter(clones == "OBAMA")
-mydata2.obama
+mydata2.obama = mydata2 %>% filter(startsWith(environ, "O"))
+View(mydata2.obama)
 head(mydata2.obama)
+
+## getting null values
+mydata2 %>% filter(is.na(comment))
 
 
 ## Using the arrange function
@@ -67,3 +70,23 @@ mydata2.short
 
 ## Using select function to position a variable to the start of
 ## the end of a table.
+mydata2.short2 = mydata2 %>% select(dm, everything())
+mydata2.short2
+
+## Using the mutate function to add new columns to our table
+mydata2.new_column = mydata2.short %>% mutate(perc_dm = ifelse(dm > 30, dm/100, NA))
+mydata2.new_column
+
+## Using the summarise function to group by and centralize calculations
+## on data sets and columns
+mydata2.short %>% 
+  group_by(clones, trial_type) %>% 
+  summarise(clones_yield = mean(yield, na.rm = TRUE)) %>%
+  arrange(desc(clones_yield))
+
+
+## Count the number of observation after summarizing or grouping
+mydata2.short %>% 
+  group_by(clones) %>%
+  count(n = n())
+

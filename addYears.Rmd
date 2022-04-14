@@ -1,0 +1,87 @@
+getwd()
+library(tidyverse)
+library(readxl)
+library(writexl)
+
+---
+  title: "IITAPedigree"
+  author: "Cletus Emmanuel"
+  date: "2022-04-13"
+  editor_options:
+    chunk_output_type: console
+---
+
+
+
+
+
+
+This R script is useless at the moment, trying to figure out how i can work around the technique using a different method with the script down here. This will just extract the Accessions starting with those prefixes.
+
+
+
+Use the remaining 2 R scripts below this one.
+```{r}
+
+ag_data = read.csv("IITAPedigree.csv", na = c(" ", ".", "NA"))
+head(ag_data)
+
+get_requiredRows = function(pedigree){
+  ag_data_filtd = pedigree %>% rowwise() %>%
+    filter(startsWith(Accession, prefix = "IITA-TMS") | 
+            startsWith(Accession, prefix = "TMS") |
+            startsWith(Accession, prefix = "IBA"))
+  return(ag_data_filtd)
+}
+
+new_data = get_requiredRows(ag_data)
+
+View(new_data)
+
+
+```
+
+
+You can work with this, this will get the first two digit of every accession which in our case is the year, and add it to its century, which is a standard representation of "YEAR".
+
+
+```{r}
+
+
+adjust_accession_years = function(new_data){
+  pedigree = new_data %>% mutate(accession_y = 
+              as.numeric(str_extract(Accession, "\\d{2}")))
+  
+  pedigree_alt = pedigree %>% 
+    rowwise() %>%
+    mutate(accession_y = ifelse(accession_y > 22, accession_y + 1900,
+                                accession_y + 2000))
+  return(pedigree_alt)
+  
+}
+ag_data = read.csv("IITAPedigree.csv", na = c(" ", ".", "NA"))
+ag_arg = adjust_accession_years(ag_data)
+ag_arg
+```
+
+
+After getting the year for all the accessions on a different column, I just need to delete the invalid years, i.e from the accessions that are not IITA, TMS, OR IBA using nested ifelse function. I get those ones and then delete the year. Then i am left with the exact accessions with years i really need. After which i exported into a new csv file.
+
+
+```{r}
+
+### Check if accession name meets the following conditions
+ag_arg$accession_y2 =ifelse(startsWith(as.character(ag_arg$Accession),"IITA-TMS"),
+                           ag_arg$accession_y,
+                           ifelse(startsWith(as.character(ag_arg$Accession),"TMS"),
+                            ag_arg$accession_y,
+                          ifelse(startsWith(as.character(ag_arg$Accession),"IBA"),
+                            ag_arg$accession_y, NA)))
+
+ag_arg$accession_y2 = ifelse(grepl("SN", ag_arg$Accession), 
+                             1+ag_arg$accession_y2, ag_arg$accession_y2)
+ag_arg$accession_y = ag_arg$accession_y2
+ag_arg = subset(ag_arg, select = -c(accession_y2))
+ag_arg
+write.csv(ag_arg, file = "new_pedigree.csv", row.names = FALSE)
+```
